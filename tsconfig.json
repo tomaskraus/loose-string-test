@@ -1,0 +1,21 @@
+{
+  "extends": "./node_modules/gts/tsconfig-google.json",
+  "compilerOptions": {
+    "types": ["node", "jest"],
+    "target": "ES2017",
+    "module": "commonjs",
+    "rootDir": ".",
+    "outDir": "build",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "paths": {
+      "#src/*": ["./src/*"]
+    }
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node",
+    "require": ["tsconfig-paths/register"]
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}
