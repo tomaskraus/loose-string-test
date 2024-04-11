@@ -20,11 +20,15 @@
   },
   "keywords": [
     "test",
-    "strimg",
+    "string",
     "loose",
     "match",
     "output",
-    "console"
+    "console",
+    "compare",
+    "loose compare",
+    "string test",
+    "string compare"
   ],
   "repository": {
     "type": "git",

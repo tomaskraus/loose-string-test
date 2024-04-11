@@ -5,16 +5,18 @@ const string_utils_1 = require("./string-utils");
 const REST_MARK = '...';
 /**
  * Tests if a given input string can match the simple pattern string.
- * That pattern string is a very simple expression, much simpler than a RegExp
+ * That pattern string is a very simple expression, much simpler than a RegExp (see examples).
  * @param patternStr a pattern an input string is matched with
  * @param inputStr an input string
  * @returns true if there is a match between the pattern and the input string, false otherwise
  *
  * @example
+ *
+ *   // loose match (spaces and eols are insignificant)
  *   looseStringTest( 'abc', ' abc  ') === true
  *   looseStringTest( '[1,2,3]', '[1, 2, 3]') === true
  *
- *   // exact match
+ *   // exact match (enclose the pattern in quotes)
  *   looseStringTest( '"abc"', ' abc  ') === false
  *   looseStringTest( '"abc"', 'abc') === true
  *
