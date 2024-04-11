@@ -78,4 +78,5 @@ const {looseStringTest} = require('loose-string-test');
 
 - Typed
 - With `d.ts` for javascript
+- No dependencies
 - Well tested, 100% code coverage
