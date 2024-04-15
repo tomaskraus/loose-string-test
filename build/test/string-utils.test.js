@@ -1,12 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const string_utils_1 = require("#src/string-utils");
-describe('escapeRegExp', () => {
-    test('escapes special chars', () => {
-        expect((0, string_utils_1.escapeRegExp)('*')).toEqual('\\*');
-        expect((0, string_utils_1.escapeRegExp)('^$.?*+\\[](){}')).toEqual('\\^\\$\\.\\?\\*\\+\\\\\\[\\]\\(\\)\\{\\}');
-    });
-});
 describe('stripUnimportantWhitechars', () => {
     test('empty string', () => {
         expect((0, string_utils_1.stripUnimportantWhitechars)('')).toEqual('');

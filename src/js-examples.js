@@ -36,7 +36,7 @@ console.log(looseStringTest('["a b","cd" ...', '["ab", "cd", " ef"]')); // false
 console.log(looseStringTest('"abc" ...', 'abcde'));
 console.log(looseStringTest('a b c ...', ' abcde'));
 
-console.log(parsePattern('abc d '));
+console.log(parsePattern('abcd '));
 // {
 //   body: 'abc d ',
 //   stripped: 'abcd',

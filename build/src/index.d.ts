@@ -21,6 +21,20 @@ export declare const REST_MARK = "...";
  *   looseStringTest( 'a b c ...', ' abcde') === true
  */
 export declare const looseStringTest: (patternStr: string, inputStr: string) => boolean;
+/**
+ * Provides information about the pattern.
+ * @param patternStr pattern
+ * @returns information object
+ *
+ * @example
+ * parsePattern('abcd ')
+ * // {
+ * //   body: 'abc d ',
+ * //   stripped: 'abcd',
+ * //   isExactPattern: false,
+ * //   isStartPattern: false
+ * // }
+ */
 export declare const parsePattern: (patternStr: string) => {
     body: string;
     stripped: string;

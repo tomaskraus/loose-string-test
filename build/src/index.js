@@ -27,21 +27,28 @@ exports.REST_MARK = '...';
 const looseStringTest = (patternStr, inputStr) => {
     const p = (0, exports.parsePattern)(patternStr);
     let pattern = p.body;
-    if (p.isExactPattern) {
-        return p.isStartPattern
-            ? inputStr.startsWith(pattern)
-            : pattern === inputStr;
+    if (!p.isExactPattern) {
+        // loose (start|simple)pattern
+        pattern = p.stripped;
+        inputStr = (0, string_utils_1.stripUnimportantWhitechars)(inputStr);
     }
-    // loose (start|simple)pattern
-    pattern = p.stripped;
-    inputStr = (0, string_utils_1.stripUnimportantWhitechars)(inputStr);
-    // comparison
-    pattern = (0, string_utils_1.escapeRegExp)(pattern);
-    pattern = `^${pattern}${p.isStartPattern ? '.*' : '$'}`;
-    const re = new RegExp(pattern);
-    return re.test(inputStr);
+    return p.isStartPattern ? inputStr.startsWith(pattern) : pattern === inputStr;
 };
 exports.looseStringTest = looseStringTest;
+/**
+ * Provides information about the pattern.
+ * @param patternStr pattern
+ * @returns information object
+ *
+ * @example
+ * parsePattern('abcd ')
+ * // {
+ * //   body: 'abc d ',
+ * //   stripped: 'abcd',
+ * //   isExactPattern: false,
+ * //   isStartPattern: false
+ * // }
+ */
 const parsePattern = (patternStr) => {
     let body = patternStr;
     let stripped = patternStr;

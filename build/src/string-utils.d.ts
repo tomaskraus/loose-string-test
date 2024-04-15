@@ -1,10 +1,4 @@
 /**
- * escapes RegExp special chars in a string
- * @param s
- * @returns
- */
-export declare const escapeRegExp: (s: string) => string;
-/**
  * strips spaces, tabs and eols from a string
  *
  * preserves these white chars within quote pairs, thus treats values of stringified object nicely

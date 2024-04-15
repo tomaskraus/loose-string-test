@@ -1,14 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.stripUnimportantWhitechars = exports.escapeRegExp = void 0;
-// from https://stackoverflow.com/questions/4371565/create-regexps-on-the-fly-using-string-variables
-/**
- * escapes RegExp special chars in a string
- * @param s
- * @returns
- */
-const escapeRegExp = (s) => s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-exports.escapeRegExp = escapeRegExp;
+exports.stripUnimportantWhitechars = void 0;
 /**
  * strips spaces, tabs and eols from a string
  *

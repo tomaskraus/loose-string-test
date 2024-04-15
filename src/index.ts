@@ -1,4 +1,4 @@
-import {escapeRegExp, stripUnimportantWhitechars} from './string-utils';
+import {stripUnimportantWhitechars} from './string-utils';
 
 export const REST_MARK = '...';
 
@@ -27,23 +27,29 @@ export const looseStringTest = (patternStr: string, inputStr: string) => {
   const p = parsePattern(patternStr);
   let pattern = p.body;
 
-  if (p.isExactPattern) {
-    return p.isStartPattern
-      ? inputStr.startsWith(pattern)
-      : pattern === inputStr;
+  if (!p.isExactPattern) {
+    // loose (start|simple)pattern
+    pattern = p.stripped;
+    inputStr = stripUnimportantWhitechars(inputStr);
   }
 
-  // loose (start|simple)pattern
-  pattern = p.stripped;
-  inputStr = stripUnimportantWhitechars(inputStr);
-
-  // comparison
-  pattern = escapeRegExp(pattern);
-  pattern = `^${pattern}${p.isStartPattern ? '.*' : '$'}`;
-  const re = new RegExp(pattern);
-  return re.test(inputStr);
+  return p.isStartPattern ? inputStr.startsWith(pattern) : pattern === inputStr;
 };
 
+/**
+ * Provides information about the pattern.
+ * @param patternStr pattern
+ * @returns information object
+ *
+ * @example
+ * parsePattern('abcd ')
+ * // {
+ * //   body: 'abc d ',
+ * //   stripped: 'abcd',
+ * //   isExactPattern: false,
+ * //   isStartPattern: false
+ * // }
+ */
 export const parsePattern = (patternStr: string) => {
   let body = patternStr;
   let stripped = patternStr;

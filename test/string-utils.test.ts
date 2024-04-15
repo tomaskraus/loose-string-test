@@ -1,13 +1,4 @@
-import {escapeRegExp, stripUnimportantWhitechars} from '#src/string-utils';
-
-describe('escapeRegExp', () => {
-  test('escapes special chars', () => {
-    expect(escapeRegExp('*')).toEqual('\\*');
-    expect(escapeRegExp('^$.?*+\\[](){}')).toEqual(
-      '\\^\\$\\.\\?\\*\\+\\\\\\[\\]\\(\\)\\{\\}'
-    );
-  });
-});
+import {stripUnimportantWhitechars} from '#src/string-utils';
 
 describe('stripUnimportantWhitechars', () => {
   test('empty string', () => {

@@ -1,12 +1,3 @@
-// from https://stackoverflow.com/questions/4371565/create-regexps-on-the-fly-using-string-variables
-/**
- * escapes RegExp special chars in a string
- * @param s
- * @returns
- */
-export const escapeRegExp = (s: string) =>
-  s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-
 /**
  * strips spaces, tabs and eols from a string
  *
