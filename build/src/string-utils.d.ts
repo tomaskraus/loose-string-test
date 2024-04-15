@@ -14,4 +14,4 @@ export declare const escapeRegExp: (s: string) => string;
  * @example
  *   stripSpacesSafely('[ "a b ", "cd"  ]') === '["a b ","cd"]'
  */
-export declare const stripSpacesSafely: (str: string) => string;
+export declare const stripUnimportantWhitechars: (str: string) => string;

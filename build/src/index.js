@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.looseStringTest = void 0;
+exports.parsePattern = exports.looseStringTest = exports.REST_MARK = void 0;
 const string_utils_1 = require("./string-utils");
-const REST_MARK = '...';
+exports.REST_MARK = '...';
 /**
  * Tests if a given input string can match the simple pattern string.
  * That pattern string is a very simple expression, much simpler than a RegExp (see examples).
@@ -25,44 +25,48 @@ const REST_MARK = '...';
  *   looseStringTest( 'a b c ...', ' abcde') === true
  */
 const looseStringTest = (patternStr, inputStr) => {
-    // preparation
-    let pattern = patternStr;
-    let isQuotedPattern = false;
-    let isStartPattern = false;
-    // start-pattern test
-    const lastThreeChars = pattern.slice(-3);
-    if (lastThreeChars === REST_MARK) {
-        pattern = pattern.slice(0, -3).trim();
-        isStartPattern = true;
+    const p = (0, exports.parsePattern)(patternStr);
+    let pattern = p.body;
+    if (p.isExactPattern) {
+        return p.isStartPattern
+            ? inputStr.startsWith(pattern)
+            : pattern === inputStr;
     }
-    // quoted-pattern test
-    if (pattern.length > 1 && pattern[0] === "'" && pattern.slice(-1) === "'") {
-        // single quoted pattern
-        isQuotedPattern = true;
-        pattern = pattern.slice(1, -1);
-    }
-    else if (pattern.length > 1 &&
-        pattern[0] === '"' &&
-        pattern.slice(-1) === '"') {
-        //double quoted pattern
-        isQuotedPattern = true;
-        pattern = pattern.slice(1, -1);
-    }
-    if (isQuotedPattern && !isStartPattern) {
-        // quoted simple pattern
-        return pattern === inputStr;
-    }
-    if (!isQuotedPattern) {
-        // unquoted (start|simple)pattern
-        pattern = (0, string_utils_1.stripSpacesSafely)(pattern);
-        inputStr = (0, string_utils_1.stripSpacesSafely)(inputStr);
-    }
+    // loose (start|simple)pattern
+    pattern = p.stripped;
+    inputStr = (0, string_utils_1.stripUnimportantWhitechars)(inputStr);
     // comparison
     pattern = (0, string_utils_1.escapeRegExp)(pattern);
-    pattern = `^${pattern}${isStartPattern ? '.*' : '$'}`;
+    pattern = `^${pattern}${p.isStartPattern ? '.*' : '$'}`;
     const re = new RegExp(pattern);
     return re.test(inputStr);
 };
 exports.looseStringTest = looseStringTest;
+const parsePattern = (patternStr) => {
+    let body = patternStr;
+    let stripped = patternStr;
+    let isExactPattern = false;
+    let isStartPattern = false;
+    // start-pattern test
+    const lastThreeChars = patternStr.slice(-3);
+    if (lastThreeChars === exports.REST_MARK) {
+        body = patternStr.slice(0, -3).trim();
+        isStartPattern = true;
+    }
+    // exact-pattern test
+    if (body.length > 1 && body[0] === "'" && body.slice(-1) === "'") {
+        // single quoted pattern
+        isExactPattern = true;
+        body = body.slice(1, -1);
+    }
+    else if (body.length > 1 && body[0] === '"' && body.slice(-1) === '"') {
+        //double quoted pattern
+        isExactPattern = true;
+        body = body.slice(1, -1);
+    }
+    stripped = isExactPattern ? body : (0, string_utils_1.stripUnimportantWhitechars)(body);
+    return { body: body, stripped, isExactPattern, isStartPattern };
+};
+exports.parsePattern = parsePattern;
 exports.default = exports.looseStringTest;
 //# sourceMappingURL=index.js.map

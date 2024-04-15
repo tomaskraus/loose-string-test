@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.stripSpacesSafely = exports.escapeRegExp = void 0;
+exports.stripUnimportantWhitechars = exports.escapeRegExp = void 0;
 // from https://stackoverflow.com/questions/4371565/create-regexps-on-the-fly-using-string-variables
 /**
  * escapes RegExp special chars in a string
@@ -19,7 +19,7 @@ exports.escapeRegExp = escapeRegExp;
  * @example
  *   stripSpacesSafely('[ "a b ", "cd"  ]') === '["a b ","cd"]'
  */
-const stripSpacesSafely = (str) => {
+const stripUnimportantWhitechars = (str) => {
     //   return str.replace(/\s/g, '');
     const ESCAPE_CHAR = '\\';
     let insideQuotes = false;
@@ -76,5 +76,5 @@ const stripSpacesSafely = (str) => {
     }
     return result;
 };
-exports.stripSpacesSafely = stripSpacesSafely;
+exports.stripUnimportantWhitechars = stripUnimportantWhitechars;
 //# sourceMappingURL=string-utils.js.map

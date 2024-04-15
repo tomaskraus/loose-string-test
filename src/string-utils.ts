@@ -17,7 +17,7 @@ export const escapeRegExp = (s: string) =>
  * @example
  *   stripSpacesSafely('[ "a b ", "cd"  ]') === '["a b ","cd"]'
  */
-export const stripSpacesSafely = (str: string) => {
+export const stripUnimportantWhitechars = (str: string) => {
   //   return str.replace(/\s/g, '');
 
   const ESCAPE_CHAR = '\\';

@@ -9,8 +9,8 @@ console.log((0, index_1.looseStringTest)('abc', ' abc  ') === true);
     console.log(matrix);
 }
 console.log('---');
-console.log((0, string_utils_1.stripSpacesSafely)('[ "a b ", "cd"  ]'));
-console.log((0, string_utils_1.stripSpacesSafely)('[ "a b ", "cd"  ]') === '["a b ","cd"]');
+console.log((0, string_utils_1.stripUnimportantWhitechars)('[ "a b ", "cd"  ]'));
+console.log((0, string_utils_1.stripUnimportantWhitechars)('[ "a b ", "cd"  ]') === '["a b ","cd"]');
 console.log('---');
 const creature = {
     name: 'R. Quack',
@@ -26,4 +26,6 @@ console.log((0, index_1.looseStringTest)('{"name":"R. Quack" ...', creatureJSON)
 //=> true
 console.log((0, index_1.looseStringTest)('{"name":"R.Quack" ...', creatureJSON));
 //=> false
+const p = (0, index_1.parsePattern)('"[ "a b ", "cd"  ]"');
+console.log(`${p.body} ${index_1.REST_MARK}`);
 //# sourceMappingURL=examples.js.map

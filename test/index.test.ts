@@ -1,268 +1,381 @@
-import looseTest from '#src/index';
+import {looseStringTest, parsePattern} from '#src/index';
 
 describe('general behavior', () => {
   test('true on pattern identical to the input', () => {
-    expect(looseTest('abc', 'abc')).toBeTruthy();
+    expect(looseStringTest('abc', 'abc')).toBeTruthy();
   });
 
   test('is case sensitive', () => {
-    expect(looseTest('aBc', 'abc')).toBeFalsy();
+    expect(looseStringTest('aBc', 'abc')).toBeFalsy();
   });
 
   test('true on empty pattern and input', () => {
-    expect(looseTest('', '')).toBeTruthy();
+    expect(looseStringTest('', '')).toBeTruthy();
   });
 
   test('false on a different input', () => {
-    expect(looseTest('abc', 'acc')).toBeFalsy();
+    expect(looseStringTest('abc', 'acc')).toBeFalsy();
   });
 
   test('pattern is not treated as regexp', () => {
-    expect(looseTest('^$.?*+\\[](){}', '^$.?*+\\[](){}')).toBeTruthy();
+    expect(looseStringTest('^$.?*+\\[](){}', '^$.?*+\\[](){}')).toBeTruthy();
   });
 });
 
-describe('unquoted pattern', () => {
+describe('loose (unquoted) pattern', () => {
   test('true on otherwise identical input string with different leading and trailing space', () => {
-    expect(looseTest('abc', '  abc ')).toBeTruthy();
+    expect(looseStringTest('abc', '  abc ')).toBeTruthy();
   });
 
   test('true regardless of different leading and trailing spaces in the pattern and the input', () => {
-    expect(looseTest(' abc  ', '   abc    ')).toBeTruthy();
+    expect(looseStringTest(' abc  ', '   abc    ')).toBeTruthy();
   });
 
   test('true regardless of line breaks in the input', () => {
-    expect(looseTest(' abc  ', '   a\nbc    ')).toBeTruthy();
+    expect(looseStringTest(' abc  ', '   a\nbc    ')).toBeTruthy();
   });
 
   test('false on a longer input', () => {
-    expect(looseTest('abc', 'abcd')).toBeFalsy();
+    expect(looseStringTest('abc', 'abcd')).toBeFalsy();
   });
 });
 
-describe('unquoted, does not care about whitespaces in both pattern and input', () => {
+describe('loose, does not care about whitespaces in both pattern and input', () => {
   test('true on different spacing', () => {
-    expect(looseTest('[1, 2, 3]', '[1,2 , 3 ]')).toBeTruthy();
+    expect(looseStringTest('[1, 2, 3]', '[1,2 , 3 ]')).toBeTruthy();
   });
 });
 
-describe('unquoted, accepts quotes inside the pattern', () => {
+describe('loose, accepts quotes inside the pattern', () => {
   test('single quotes', () => {
-    expect(looseTest(" a'b'cd  ", "a'b'cd")).toBeTruthy();
+    expect(looseStringTest(" a'b'cd  ", "a'b'cd")).toBeTruthy();
   });
   test('double quotes', () => {
-    expect(looseTest(' a"b"cd  ', 'a"b"cd')).toBeTruthy();
+    expect(looseStringTest(' a"b"cd  ', 'a"b"cd')).toBeTruthy();
   });
 });
 
 // ----------------------------------------------------------------
 
-describe('single-quoted pattern', () => {
+describe('exact pattern (single-quoted)', () => {
   test('true on exact match, including whitespaces', () => {
-    expect(looseTest("' abc  '", ' abc  ')).toBeTruthy();
+    expect(looseStringTest("' abc  '", ' abc  ')).toBeTruthy();
   });
 
   test('false on a whitespace mismatch', () => {
-    expect(looseTest("' abc  '", ' abc ')).toBeFalsy();
+    expect(looseStringTest("' abc  '", ' abc ')).toBeFalsy();
   });
 
-  test('empty quoted pattern match empty input', () => {
-    expect(looseTest("''", '')).toBeTruthy();
+  test('empty exact pattern match empty input', () => {
+    expect(looseStringTest("''", '')).toBeTruthy();
   });
 
-  test('empty quoted pattern does not match non-empty input', () => {
-    expect(looseTest("''", ' ')).toBeFalsy();
+  test('empty exact pattern does not match non-empty input', () => {
+    expect(looseStringTest("''", ' ')).toBeFalsy();
   });
 
-  test.skip('strips whitespaces along single quotes in the pattern', () => {
-    expect(looseTest("    ' abc  ' ", ' abc  ')).toBeTruthy();
+  test.skip('strips whitespaces along single quotes in the exact pattern', () => {
+    expect(looseStringTest("    ' abc  ' ", ' abc  ')).toBeTruthy();
   });
 
-  test('accepts single quotes inside a quoted pattern', () => {
-    expect(looseTest("' 'ab'c  '", " 'ab'c  ")).toBeTruthy();
+  test('accepts single quotes inside an exact pattern', () => {
+    expect(looseStringTest("' 'ab'c  '", " 'ab'c  ")).toBeTruthy();
   });
 
-  test('accepts double quotes inside a quoted pattern', () => {
-    expect(looseTest('\' "ab"c  \'', ' "ab"c  ')).toBeTruthy();
+  test('accepts double quotes inside an exact pattern', () => {
+    expect(looseStringTest('\' "ab"c  \'', ' "ab"c  ')).toBeTruthy();
   });
 });
 
-describe('double-quoted pattern', () => {
+describe('exact pattern (double-quoted)', () => {
   test('double quoted: true on exact match, including whitespaces', () => {
-    expect(looseTest('" abc  "', ' abc  ')).toBeTruthy();
+    expect(looseStringTest('" abc  "', ' abc  ')).toBeTruthy();
   });
 
   test('double quoted:false on whitespace mismatch', () => {
-    expect(looseTest('" abc  "', ' abc ')).toBeFalsy();
+    expect(looseStringTest('" abc  "', ' abc ')).toBeFalsy();
   });
 
-  test('double quoted: empty pattern match empty input', () => {
-    expect(looseTest('""', '')).toBeTruthy();
+  test('double quoted: empty exact pattern match empty input', () => {
+    expect(looseStringTest('""', '')).toBeTruthy();
   });
 
-  test('double quoted: empty quoted pattern does not match non-empty input', () => {
-    expect(looseTest("''", ' ')).toBeFalsy();
+  test('double quoted: empty exact pattern does not match non-empty input', () => {
+    expect(looseStringTest("''", ' ')).toBeFalsy();
   });
 
   test.skip('double quoted: strips whitespaces along double quotes', () => {
-    expect(looseTest('    " abc  " ', ' abc  ')).toBeTruthy();
+    expect(looseStringTest('    " abc  " ', ' abc  ')).toBeTruthy();
   });
 
   test('double quoted: accepts single quotes inside', () => {
-    expect(looseTest('" \'ab\'c  "', " 'ab'c  ")).toBeTruthy();
+    expect(looseStringTest('" \'ab\'c  "', " 'ab'c  ")).toBeTruthy();
   });
 
   test('double quoted: accepts double quotes inside', () => {
-    expect(looseTest('" "ab"c  "', ' "ab"c  ')).toBeTruthy();
+    expect(looseStringTest('" "ab"c  "', ' "ab"c  ')).toBeTruthy();
   });
 });
 
 // ----------------------------------------------------------------
 
-describe('(str ...) unquoted start-pattern: match a substring at the beginning', () => {
-  test('unquoted-start: match if the input is the same as a start of the pattern,', () => {
-    expect(looseTest('abc ...', 'abc')).toBeTruthy();
+describe('(str ...) loose start-pattern: match a substring at the beginning', () => {
+  test('loose-start: match if the input is the same as a start of the pattern,', () => {
+    expect(looseStringTest('abc ...', 'abc')).toBeTruthy();
   });
 
-  test('unquoted-start: match the substring at the beginning of the input', () => {
-    expect(looseTest('abc ...', '  abcdef')).toBeTruthy();
+  test('loose-start: match the substring at the beginning of the input', () => {
+    expect(looseStringTest('abc ...', '  abcdef')).toBeTruthy();
   });
 
-  test('unquoted-start: match the empty pattern at the beginning 1', () => {
-    expect(looseTest('...', '  abcdef')).toBeTruthy();
-  });
-  test('unquoted-start: match the empty pattern at the beginning 2', () => {
-    expect(looseTest('...', '')).toBeTruthy();
+  test('loose-start: match the substring at the beginning of the input (no match)', () => {
+    expect(looseStringTest('abc ...', '  ab')).toBeFalsy();
   });
 
-  test('unquoted-start: does not match the not-so substring at the beginning of the input', () => {
-    expect(looseTest('abd ...', '  abcdef')).toBeFalsy();
+  test('loose-start: match the empty pattern at the beginning 1', () => {
+    expect(looseStringTest('...', '  abcdef')).toBeTruthy();
+  });
+  test('loose-start: match the empty pattern at the beginning 2', () => {
+    expect(looseStringTest('...', '')).toBeTruthy();
   });
 
-  test('unquoted-start: pattern: rest-mark (...) right after the expected start: match the substring at the beginning', () => {
-    expect(looseTest('abc...', 'abcdef')).toBeTruthy();
+  test('loose-start: does not match the not-so substring at the beginning of the input', () => {
+    expect(looseStringTest('abd ...', '  abcdef')).toBeFalsy();
   });
 
-  test.skip('unquoted-start: pattern strips leading and trailing whitespace', () => {
-    expect(looseTest('  abc ...    ', 'abcdef')).toBeTruthy();
+  test('loose-start: pattern: rest-mark (...) right after the expected start: match the substring at the beginning', () => {
+    expect(looseStringTest('abc...', 'abcdef')).toBeTruthy();
+  });
+
+  test.skip('loose-start: pattern strips leading and trailing whitespace', () => {
+    expect(looseStringTest('  abc ...    ', 'abcdef')).toBeTruthy();
   });
 });
 
-describe('("str" ...) quoted start-pattern: match substring at the beginning', () => {
-  test('quoted-start: match if the input is the same as a start of the pattern', () => {
-    expect(looseTest('" abc " ...', ' abc ')).toBeTruthy();
+describe('("str" ...) exact start-pattern: match substring at the beginning', () => {
+  test('exact-start: match if the input is the same as a start of the pattern', () => {
+    expect(looseStringTest('" abc " ...', ' abc ')).toBeTruthy();
   });
 
-  test('quoted-start: match the substring at the beginning of the input (match)', () => {
-    expect(looseTest('" abc" ...', ' abcdef')).toBeTruthy();
+  test('exact-start: match the substring at the beginning of the input (match)', () => {
+    expect(looseStringTest('" abc" ...', ' abcdef')).toBeTruthy();
   });
-  test('quoted-start: match the substring at the beginning of the input (no match)', () => {
-    expect(looseTest('"abc" ...', ' abcdef')).toBeFalsy();
+  test('exact-start: match the substring at the beginning of the input (no match)', () => {
+    expect(looseStringTest('"abc" ...', ' abcdef')).toBeFalsy();
+  });
+  test('exact-start: match the substring at the beginning of the input (no match 2)', () => {
+    expect(looseStringTest('"abc" ...', 'ab')).toBeFalsy();
   });
 
-  test('quoted-start: match the empty substring at the beginning', () => {
-    expect(looseTest('"" ...', ' abcdef')).toBeTruthy();
+  test('exact-start: match the empty substring at the beginning', () => {
+    expect(looseStringTest('"" ...', ' abcdef')).toBeTruthy();
   });
 
-  test('quoted-start: pattern rest-mark (...) right after the expected start: match the substring at the beginning', () => {
-    expect(looseTest('"abc"...', 'abcdef')).toBeTruthy();
+  test('exact-start: pattern rest-mark (...) right after the expected start: match the substring at the beginning', () => {
+    expect(looseStringTest('"abc"...', 'abcdef')).toBeTruthy();
   });
 });
 
 // ----------------------------------------------------------------
 
 describe('multiline inputs, one-line patterns', () => {
-  test('one-line unquoted-pattern does not match multi-line input', () => {
+  test('one-line loose-pattern does not match multi-line input', () => {
     const input = `abc
 de`;
-    expect(looseTest('abc', input)).toBeFalsy();
+    expect(looseStringTest('abc', input)).toBeFalsy();
   });
-  test('unquoted-start-pattern', () => {
+  test('loose-start-pattern', () => {
     const input = `[[1, 2, 3],
 [4, 5, 6]]`;
-    expect(looseTest('[[1,2,3],[4, ...', input)).toBeTruthy();
+    expect(looseStringTest('[[1,2,3],[4, ...', input)).toBeTruthy();
   });
 
-  test('quoted-start-pattern', () => {
+  test('exact-start-pattern', () => {
     const input = `[[1, 2, 3],
 [4, 5, 6]]`;
-    expect(looseTest('"[[1, 2, 3" ...', input)).toBeTruthy();
+    expect(looseStringTest('"[[1, 2, 3" ...', input)).toBeTruthy();
   });
 });
 
-describe('unquoted multiline patterns', () => {
-  test('unquoted-multiline simple pattern', () => {
+describe('loose multiline patterns', () => {
+  test('loose-multiline simple pattern', () => {
     const input = `[[1, 2, 3], 
   [4, 5, 6]]`;
-    expect(looseTest('[[1,2,3],\n[4,5,6]]', input)).toBeTruthy();
+    expect(looseStringTest('[[1,2,3],\n[4,5,6]]', input)).toBeTruthy();
   });
 
-  test('unquoted-multiline pattern does not match longer inputs', () => {
+  test('loose-multiline pattern does not match longer inputs', () => {
     const input = `[[1, 2, 3], 
 [4, 5, 6]],
 [7]]`;
-    expect(looseTest('[[1,2,3],\n[4,5,6]],', input)).toBeFalsy();
+    expect(looseStringTest('[[1,2,3],\n[4,5,6]],', input)).toBeFalsy();
   });
 
-  test('unquoted-multiline start-pattern', () => {
+  test('loose-multiline start-pattern', () => {
     const input = `[[1, 2, 3], 
     [4, 5, 6]]`;
-    expect(looseTest('[[1,2,3],\n[4,5, ...', input)).toBeTruthy();
+    expect(looseStringTest('[[1,2,3],\n[4,5, ...', input)).toBeTruthy();
   });
 });
 
-describe('quoted multiline patterns', () => {
-  test('quoted-multiline pattern', () => {
+describe('multiline patterns', () => {
+  test('loose-multiline pattern', () => {
     const input = '[[1, 2, 3],\n[4, 5, 6]]';
-    expect(looseTest('"[[1, 2, 3],\n[4, 5, 6]]"', input)).toBeTruthy();
+    expect(looseStringTest('"[[1, 2, 3],\n[4, 5, 6]]"', input)).toBeTruthy();
   });
 
-  test('quoted-multiline start-pattern', () => {
+  test('exact-multiline start-pattern', () => {
     const input = `[[1, 2, 3],
 [4, 5, 6]]`;
-    expect(looseTest('"[[1, 2, 3],\n[4, "...', input)).toBeTruthy();
+    expect(looseStringTest('"[[1, 2, 3],\n[4, "...', input)).toBeTruthy();
   });
 });
 
-describe('unquoted specials', () => {
-  test("unquoted pattern preserves spaces in quoted areas ('inner strings')", () => {
+describe('loose specials', () => {
+  test("loose pattern preserves spaces in quoted areas ('inner strings')", () => {
     const objstring1 = `{
         name: 'John Doe'
     }
     `;
-    expect(looseTest("{ name: 'JohnDoe'}", objstring1)).toBeFalsy();
-    expect(looseTest("{ name: 'John Doe'}", objstring1)).toBeTruthy();
+    expect(looseStringTest("{ name: 'JohnDoe'}", objstring1)).toBeFalsy();
+    expect(looseStringTest("{ name: 'John Doe'}", objstring1)).toBeTruthy();
   });
 
-  test('unquoted pattern preserves spaces in double quoted areas ("inner strings")', () => {
+  test('loose pattern preserves spaces in double quoted areas ("inner strings")', () => {
     const objstring1 = `{
         name: "John Doe"
     }
     `;
-    expect(looseTest('{ name: "JohnDoe"}', objstring1)).toBeFalsy();
-    expect(looseTest('{ name: "John Doe"}', objstring1)).toBeTruthy();
+    expect(looseStringTest('{ name: "JohnDoe"}', objstring1)).toBeFalsy();
+    expect(looseStringTest('{ name: "John Doe"}', objstring1)).toBeTruthy();
   });
 
-  test("unquoted start-pattern preserves spaces in quoted areas ('inner strings')", () => {
+  test("loose start-pattern preserves spaces in quoted areas ('inner strings')", () => {
     const objstring1 = `{
         name: 'John Doe',
         salary: 20
     }
     `;
-    expect(looseTest("{ name: 'JohnDoe'...", objstring1)).toBeFalsy();
-    expect(looseTest("{ name: 'John Doe'...", objstring1)).toBeTruthy();
+    expect(looseStringTest("{ name: 'JohnDoe'...", objstring1)).toBeFalsy();
+    expect(looseStringTest("{ name: 'John Doe'...", objstring1)).toBeTruthy();
   });
 
-  test('unquoted start-pattern with rest-mark literal at the beginning', () => {
-    expect(looseTest('... ...', '...abcd')).toBeTruthy();
-    expect(looseTest('......', '...abcd')).toBeTruthy();
+  test('loose start-pattern with rest-mark literal at the beginning', () => {
+    expect(looseStringTest('... ...', '...abcd')).toBeTruthy();
+    expect(looseStringTest('......', '...abcd')).toBeTruthy();
   });
 });
 
 describe('specials', () => {
   test('should we test quoted input, just add quotes', () => {
-    expect(looseTest('"Hello, world!"', '"Hello, world!"')).toBeFalsy();
-    expect(looseTest('""Hello, world!""', '"Hello, world!"')).toBeTruthy();
-    expect(looseTest(' "Hello, world!" ', '"Hello,world!"')).toBeFalsy();
+    expect(looseStringTest('"Hello, world!"', '"Hello, world!"')).toBeFalsy();
+    expect(
+      looseStringTest('""Hello, world!""', '"Hello, world!"')
+    ).toBeTruthy();
+    expect(looseStringTest(' "Hello, world!" ', '"Hello,world!"')).toBeFalsy();
+  });
+});
+
+// -----------------------------------------------------------------
+
+describe('parsePattern', () => {
+  test('parses loose simple empty pattern', () => {
+    const res = parsePattern('');
+    expect(res.body).toEqual('');
+    expect(res.stripped).toEqual('');
+    expect(res.isExactPattern).toBeFalsy;
+    expect(res.isStartPattern).toBeFalsy;
+  });
+
+  test('parses loose simple pattern', () => {
+    const res = parsePattern(' hello "world 2" ');
+    expect(res.body).toEqual(' hello "world 2" ');
+    expect(res.stripped).toEqual('hello"world 2"');
+    expect(res.isExactPattern).toBeFalsy;
+    expect(res.isStartPattern).toBeFalsy;
+  });
+
+  test('parses loose empty start pattern', () => {
+    const res = parsePattern(' ...');
+    expect(res.body).toEqual('');
+    expect(res.stripped).toEqual('');
+    expect(res.isExactPattern).toBeFalsy;
+    expect(res.isStartPattern).toBeTruthy;
+  });
+
+  test('parses loose start pattern', () => {
+    const res = parsePattern(' hello "world 2" ...');
+    expect(res.body).toEqual('hello "world 2"');
+    expect(res.stripped).toEqual('hello"world 2"');
+    expect(res.isExactPattern).toBeFalsy;
+    expect(res.isStartPattern).toBeTruthy;
+  });
+
+  // ---------- ------------
+
+  test('parses exact (singleQuoted) empty pattern', () => {
+    const res = parsePattern("''");
+    expect(res.body).toEqual('');
+    expect(res.stripped).toEqual('');
+    expect(res.isExactPattern).toBeTruthy;
+    expect(res.isStartPattern).toBeFalsy;
+  });
+
+  test('parses exact (singleQuoted) pattern', () => {
+    const res = parsePattern("'hello '");
+    expect(res.body).toEqual('hello ');
+    expect(res.stripped).toEqual('hello ');
+    expect(res.isExactPattern).toBeTruthy;
+    expect(res.isStartPattern).toBeFalsy;
+  });
+
+  test('parses exact (singleQuoted) empty start pattern', () => {
+    const res = parsePattern("'' ...");
+    expect(res.body).toEqual('');
+    expect(res.stripped).toEqual('');
+    expect(res.isExactPattern).toBeTruthy;
+    expect(res.isStartPattern).toBeTruthy;
+  });
+
+  test('parses exact (singleQuoted) start pattern', () => {
+    const res = parsePattern("'hello ' ...");
+    expect(res.body).toEqual('hello ');
+    expect(res.stripped).toEqual('hello ');
+    expect(res.isExactPattern).toBeTruthy;
+    expect(res.isStartPattern).toBeTruthy;
+  });
+
+  // ----------
+
+  test('parses exact (doubleQuoted) empty pattern', () => {
+    const res = parsePattern('""');
+    expect(res.body).toEqual('');
+    expect(res.stripped).toEqual('');
+    expect(res.isExactPattern).toBeTruthy;
+    expect(res.isStartPattern).toBeFalsy;
+  });
+
+  test('parses exact (doubleQuoted) pattern', () => {
+    const res = parsePattern('"hello "');
+    expect(res.body).toEqual('hello ');
+    expect(res.stripped).toEqual('hello ');
+    expect(res.isExactPattern).toBeTruthy;
+    expect(res.isStartPattern).toBeFalsy;
+  });
+
+  test('parses exact (doubleQuoted) empty start pattern', () => {
+    const res = parsePattern('"" ...');
+    expect(res.body).toEqual('');
+    expect(res.stripped).toEqual('');
+    expect(res.isExactPattern).toBeTruthy;
+    expect(res.isStartPattern).toBeTruthy;
+  });
+
+  test('parses exact (doubleQuoted) start pattern', () => {
+    const res = parsePattern('"hello " ...');
+    expect(res.body).toEqual('hello ');
+    expect(res.stripped).toEqual('hello ');
+    expect(res.isExactPattern).toBeTruthy;
+    expect(res.isStartPattern).toBeTruthy;
   });
 });

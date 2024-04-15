@@ -1,4 +1,4 @@
-import {escapeRegExp, stripSpacesSafely} from '#src/string-utils';
+import {escapeRegExp, stripUnimportantWhitechars} from '#src/string-utils';
 
 describe('escapeRegExp', () => {
   test('escapes special chars', () => {
@@ -9,64 +9,64 @@ describe('escapeRegExp', () => {
   });
 });
 
-describe('stripSpacesSafely', () => {
+describe('stripUnimportantWhitechars', () => {
   test('empty string', () => {
-    expect(stripSpacesSafely('')).toEqual('');
+    expect(stripUnimportantWhitechars('')).toEqual('');
   });
 
   test('string without spaces', () => {
-    expect(stripSpacesSafely('abc')).toEqual('abc');
+    expect(stripUnimportantWhitechars('abc')).toEqual('abc');
   });
 
   test('strips spaces', () => {
-    expect(stripSpacesSafely('ab c d')).toEqual('abcd');
+    expect(stripUnimportantWhitechars('ab c d')).toEqual('abcd');
   });
 
   test('strips spaces and eols', () => {
-    expect(stripSpacesSafely('ab c\nd')).toEqual('abcd');
+    expect(stripUnimportantWhitechars('ab c\nd')).toEqual('abcd');
   });
 
   test('strips spaces and eols 2', () => {
-    expect(stripSpacesSafely(' \n  ')).toEqual('');
+    expect(stripUnimportantWhitechars(' \n  ')).toEqual('');
   });
 
   test('preserves quoted content', () => {
-    expect(stripSpacesSafely("' a b\nc'")).toEqual("' a b\nc'");
+    expect(stripUnimportantWhitechars("' a b\nc'")).toEqual("' a b\nc'");
   });
 
   test('preserves double quoted content', () => {
-    expect(stripSpacesSafely('" a b\nc"')).toEqual('" a b\nc"');
+    expect(stripUnimportantWhitechars('" a b\nc"')).toEqual('" a b\nc"');
   });
 
   test('preserves quoted content more times', () => {
-    expect(stripSpacesSafely(" '( a )' '( b\n )'  ")).toEqual(
+    expect(stripUnimportantWhitechars(" '( a )' '( b\n )'  ")).toEqual(
       "'( a )''( b\n )'"
     );
   });
 
   test('preserves mixed quoted content more times', () => {
-    expect(stripSpacesSafely(' \'( a )\' "( b )"  ')).toEqual(
+    expect(stripUnimportantWhitechars(' \'( a )\' "( b )"  ')).toEqual(
       '\'( a )\'"( b )"'
     );
   });
 
   test('preserve spaces and eols only in matching quote pairs', () => {
-    expect(stripSpacesSafely(' "( a )\'  ')).toEqual('"( a )\'  ');
+    expect(stripUnimportantWhitechars(' "( a )\'  ')).toEqual('"( a )\'  ');
   });
 
   test('handles escaped quotes', () => {
-    expect(stripSpacesSafely(" '( a\\' )'  ")).toEqual("'( a' )'");
+    expect(stripUnimportantWhitechars(" '( a\\' )'  ")).toEqual("'( a' )'");
   });
 
   test('handles escaped double quotes', () => {
-    expect(stripSpacesSafely(' "( a\\" )"  ')).toEqual('"( a" )"');
+    expect(stripUnimportantWhitechars(' "( a\\" )"  ')).toEqual('"( a" )"');
   });
 
   test('handles a backslash before quotes', () => {
-    expect(stripSpacesSafely(" '( a \\\\'  ")).toEqual("'( a \\'");
+    expect(stripUnimportantWhitechars(" '( a \\\\'  ")).toEqual("'( a \\'");
   });
 
   test('handles a backslash before double quotes', () => {
-    expect(stripSpacesSafely(' "( a \\\\"  ')).toEqual('"( a \\"');
+    expect(stripUnimportantWhitechars(' "( a \\\\"  ')).toEqual('"( a \\"');
   });
 });

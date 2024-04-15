@@ -1,3 +1,4 @@
+export declare const REST_MARK = "...";
 /**
  * Tests if a given input string can match the simple pattern string.
  * That pattern string is a very simple expression, much simpler than a RegExp (see examples).
@@ -20,4 +21,10 @@
  *   looseStringTest( 'a b c ...', ' abcde') === true
  */
 export declare const looseStringTest: (patternStr: string, inputStr: string) => boolean;
+export declare const parsePattern: (patternStr: string) => {
+    body: string;
+    stripped: string;
+    isExactPattern: boolean;
+    isStartPattern: boolean;
+};
 export default looseStringTest;

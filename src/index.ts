@@ -1,6 +1,6 @@
-import {escapeRegExp, stripSpacesSafely} from './string-utils';
+import {escapeRegExp, stripUnimportantWhitechars} from './string-utils';
 
-const REST_MARK = '...';
+export const REST_MARK = '...';
 
 /**
  * Tests if a given input string can match the simple pattern string.
@@ -24,49 +24,53 @@ const REST_MARK = '...';
  *   looseStringTest( 'a b c ...', ' abcde') === true
  */
 export const looseStringTest = (patternStr: string, inputStr: string) => {
-  // preparation
-  let pattern = patternStr;
-  let isQuotedPattern = false;
-  let isStartPattern = false;
+  const p = parsePattern(patternStr);
+  let pattern = p.body;
 
-  // start-pattern test
-  const lastThreeChars = pattern.slice(-3);
-  if (lastThreeChars === REST_MARK) {
-    pattern = pattern.slice(0, -3).trim();
-    isStartPattern = true;
+  if (p.isExactPattern) {
+    return p.isStartPattern
+      ? inputStr.startsWith(pattern)
+      : pattern === inputStr;
   }
 
-  // quoted-pattern test
-  if (pattern.length > 1 && pattern[0] === "'" && pattern.slice(-1) === "'") {
-    // single quoted pattern
-    isQuotedPattern = true;
-    pattern = pattern.slice(1, -1);
-  } else if (
-    pattern.length > 1 &&
-    pattern[0] === '"' &&
-    pattern.slice(-1) === '"'
-  ) {
-    //double quoted pattern
-    isQuotedPattern = true;
-    pattern = pattern.slice(1, -1);
-  }
-
-  if (isQuotedPattern && !isStartPattern) {
-    // quoted simple pattern
-    return pattern === inputStr;
-  }
-
-  if (!isQuotedPattern) {
-    // unquoted (start|simple)pattern
-    pattern = stripSpacesSafely(pattern);
-    inputStr = stripSpacesSafely(inputStr);
-  }
+  // loose (start|simple)pattern
+  pattern = p.stripped;
+  inputStr = stripUnimportantWhitechars(inputStr);
 
   // comparison
   pattern = escapeRegExp(pattern);
-  pattern = `^${pattern}${isStartPattern ? '.*' : '$'}`;
+  pattern = `^${pattern}${p.isStartPattern ? '.*' : '$'}`;
   const re = new RegExp(pattern);
   return re.test(inputStr);
+};
+
+export const parsePattern = (patternStr: string) => {
+  let body = patternStr;
+  let stripped = patternStr;
+
+  let isExactPattern = false;
+  let isStartPattern = false;
+
+  // start-pattern test
+  const lastThreeChars = patternStr.slice(-3);
+  if (lastThreeChars === REST_MARK) {
+    body = patternStr.slice(0, -3).trim();
+    isStartPattern = true;
+  }
+
+  // exact-pattern test
+  if (body.length > 1 && body[0] === "'" && body.slice(-1) === "'") {
+    // single quoted pattern
+    isExactPattern = true;
+    body = body.slice(1, -1);
+  } else if (body.length > 1 && body[0] === '"' && body.slice(-1) === '"') {
+    //double quoted pattern
+    isExactPattern = true;
+    body = body.slice(1, -1);
+  }
+
+  stripped = isExactPattern ? body : stripUnimportantWhitechars(body);
+  return {body: body, stripped, isExactPattern, isStartPattern};
 };
 
 export default looseStringTest;

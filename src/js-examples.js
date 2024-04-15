@@ -1,4 +1,8 @@
-const {looseStringTest} = require('../build/src/index');
+const {
+  looseStringTest,
+  parsePattern,
+  REST_MARK,
+} = require('../build/src/index');
 
 console.log(looseStringTest('abc', ' abc  ') === true);
 
@@ -31,3 +35,16 @@ console.log(looseStringTest('["a b","cd" ...', '["ab", "cd", " ef"]')); // false
 
 console.log(looseStringTest('"abc" ...', 'abcde'));
 console.log(looseStringTest('a b c ...', ' abcde'));
+
+console.log(parsePattern('abc d '));
+// {
+//   body: 'abc d ',
+//   stripped: 'abcd',
+//   isExactPattern: false,
+//   isStartPattern: false
+// }
+console.log(parsePattern(' [1, 2, "ab cd", ...'));
+console.log(parsePattern('"abc"'));
+console.log(parsePattern('"abc", ...'));
+console.log(REST_MARK);
+console.log(parsePattern('["a", "b c", "d" ...'));
