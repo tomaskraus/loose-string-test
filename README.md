@@ -221,5 +221,7 @@ Creates a loose pattern from an input string that matches that input string:
 const input = `[1, 2, 3,
 4, 5, 6]`;
 createLoosePattern(input); //=> '[1, 2, 3, 4, 5, 6]'
+
+// we can limit the length of a pattern body
 createLoosePattern(input, 5); //=> '[1, 2 ...'
 ```
