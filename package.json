@@ -1,6 +1,6 @@
 {
   "name": "loose-string-test",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Loosely tests strings with ease, omits unnecessary spaces.",
   "types": "build/src/index.d.ts",
   "main": "build/src/index.js",
