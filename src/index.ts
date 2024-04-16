@@ -1,6 +1,7 @@
 import {stripUnimportantWhitechars} from './string-utils';
 
 export const REST_MARK = '...';
+export const DEFAULT_MAX_PATTERN_BODY_LENGTH = 20;
 
 /**
  * Tests if a given input string can match the simple pattern string.
@@ -77,6 +78,30 @@ export const parsePattern = (patternStr: string) => {
 
   stripped = isExactPattern ? body : stripUnimportantWhitechars(body);
   return {body: body, stripped, isExactPattern, isStartPattern};
+};
+
+/**
+ * creates a loose pattern from an input string
+ * @param str input string
+ * @param maxPatternBodyLength a threshold for a start-pattern creation. Limits the pattern body length. Dofaults to DEFAULT_MAX_PATTERN_BODY_LENGTH
+ * @returns loose patern that can match the input string
+ *
+ * @example
+ *
+ * const input = `[1, 2, 3
+ * 4, 5, 6]`;
+ * createLoosePattern(input, 5) //=> '[1, 2 ...'
+ *
+ */
+export const createLoosePattern = (
+  str: string,
+  maxPatternBodyLength = DEFAULT_MAX_PATTERN_BODY_LENGTH
+) => {
+  const s = str.replace(/\n/g, ' ');
+  if (s.length > maxPatternBodyLength) {
+    return s.substring(0, maxPatternBodyLength) + ' ' + REST_MARK;
+  }
+  return s;
 };
 
 export default looseStringTest;

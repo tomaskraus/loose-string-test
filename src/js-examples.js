@@ -1,7 +1,9 @@
 const {
   looseStringTest,
   parsePattern,
+  createLoosePattern,
   REST_MARK,
+  DEFAULT_MAX_PATTERN_BODY_LENGTH,
 } = require('../build/src/index');
 
 console.log(looseStringTest('abc', ' abc  ') === true);
@@ -47,4 +49,12 @@ console.log(parsePattern(' [1, 2, "ab cd", ...'));
 console.log(parsePattern('"abc"'));
 console.log(parsePattern('"abc", ...'));
 console.log(REST_MARK);
+console.log(DEFAULT_MAX_PATTERN_BODY_LENGTH);
 console.log(parsePattern('["a", "b c", "d" ...'));
+
+{
+  const input = `[1, 2, 3,
+4, 5, 6]`;
+  console.log(createLoosePattern(input)); //=> '[1, 2, 3, 4, 5, 6]'
+  console.log(createLoosePattern(input, 5)); //=> '[1, 2 ...'
+}

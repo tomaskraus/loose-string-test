@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parsePattern = exports.looseStringTest = exports.REST_MARK = void 0;
+exports.createLoosePattern = exports.parsePattern = exports.looseStringTest = exports.DEFAULT_MAX_PATTERN_BODY_LENGTH = exports.REST_MARK = void 0;
 const string_utils_1 = require("./string-utils");
 exports.REST_MARK = '...';
+exports.DEFAULT_MAX_PATTERN_BODY_LENGTH = 20;
 /**
  * Tests if a given input string can match the simple pattern string.
  * That pattern string is a very simple expression, much simpler than a RegExp (see examples).
@@ -75,5 +76,26 @@ const parsePattern = (patternStr) => {
     return { body: body, stripped, isExactPattern, isStartPattern };
 };
 exports.parsePattern = parsePattern;
+/**
+ * creates a loose pattern from an input string
+ * @param str input string
+ * @param maxPatternBodyLength a threshold for a start-pattern creation. Limits the pattern body length. Dofaults to DEFAULT_MAX_PATTERN_BODY_LENGTH
+ * @returns loose patern that can match the input string
+ *
+ * @example
+ *
+ * const input = `[1, 2, 3
+ * 4, 5, 6]`;
+ * createLoosePattern(input, 5) //=> '[1, 2 ...'
+ *
+ */
+const createLoosePattern = (str, maxPatternBodyLength = exports.DEFAULT_MAX_PATTERN_BODY_LENGTH) => {
+    const s = str.replace(/\n/g, ' ');
+    if (s.length > maxPatternBodyLength) {
+        return s.substring(0, maxPatternBodyLength) + ' ' + exports.REST_MARK;
+    }
+    return s;
+};
+exports.createLoosePattern = createLoosePattern;
 exports.default = exports.looseStringTest;
 //# sourceMappingURL=index.js.map

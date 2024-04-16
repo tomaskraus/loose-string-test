@@ -191,7 +191,7 @@ The only important whitespaces are ones inside quote pairs in the loose partial 
 looseStringTest(' [ "a", " b ", .... ', '["a"," b ","c "]'); // true
 ```
 
-## ParsePattern Function
+## parsePattern Function
 
 Gives you information about a pattern:
 
@@ -211,4 +211,15 @@ parsePattern('["a", "b c", "d" ...');
 //   isExactPattern: false,
 //   isStartPattern: true
 // }
+```
+
+## createLoosePattern Function
+
+Creates a loose pattern from an input string that matches that input string:
+
+```js
+const input = `[1, 2, 3,
+4, 5, 6]`;
+createLoosePattern(input); //=> '[1, 2, 3, 4, 5, 6]'
+createLoosePattern(input, 5); //=> '[1, 2 ...'
 ```

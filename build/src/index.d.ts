@@ -1,4 +1,5 @@
 export declare const REST_MARK = "...";
+export declare const DEFAULT_MAX_PATTERN_BODY_LENGTH = 20;
 /**
  * Tests if a given input string can match the simple pattern string.
  * That pattern string is a very simple expression, much simpler than a RegExp (see examples).
@@ -41,4 +42,18 @@ export declare const parsePattern: (patternStr: string) => {
     isExactPattern: boolean;
     isStartPattern: boolean;
 };
+/**
+ * creates a loose pattern from an input string
+ * @param str input string
+ * @param maxPatternBodyLength a threshold for a start-pattern creation. Limits the pattern body length. Dofaults to DEFAULT_MAX_PATTERN_BODY_LENGTH
+ * @returns loose patern that can match the input string
+ *
+ * @example
+ *
+ * const input = `[1, 2, 3
+ * 4, 5, 6]`;
+ * createLoosePattern(input, 5) //=> '[1, 2 ...'
+ *
+ */
+export declare const createLoosePattern: (str: string, maxPatternBodyLength?: number) => string;
 export default looseStringTest;
