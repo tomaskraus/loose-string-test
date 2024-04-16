@@ -430,6 +430,12 @@ describe('createLoosePattern: rules', () => {
     input = 'abc';
     expect(looseStringTest(createLoosePattern(input), input)).toBeTruthy();
 
+    input = ' abc';
+    expect(looseStringTest(createLoosePattern(input), input)).toBeTruthy();
+
+    input = ' abc ';
+    expect(looseStringTest(createLoosePattern(input), input)).toBeTruthy();
+
     input = 'abc def';
     expect(looseStringTest(createLoosePattern(input), input)).toBeTruthy();
     expect(looseStringTest(createLoosePattern(input, 0), input)).toBeTruthy();

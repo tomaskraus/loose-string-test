@@ -352,6 +352,10 @@ describe('createLoosePattern: rules', () => {
         expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input), input)).toBeTruthy();
         input = 'abc';
         expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input), input)).toBeTruthy();
+        input = ' abc';
+        expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input), input)).toBeTruthy();
+        input = ' abc ';
+        expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input), input)).toBeTruthy();
         input = 'abc def';
         expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input), input)).toBeTruthy();
         expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input, 0), input)).toBeTruthy();
