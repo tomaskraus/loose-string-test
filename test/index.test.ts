@@ -405,7 +405,7 @@ describe('createLoosePattern', () => {
 
 test('replaces EOLs in the input with a space (3)', () => {
   const input = `{
-"name": "Donald the Duck"
+"name": "Donald the Duck",
 "occupation": "pond manager"
   }`;
   expect(createLoosePattern(input, 19)).toEqual('{ "name": "Donald t ...');
@@ -441,5 +441,17 @@ describe('createLoosePattern: rules', () => {
     expect(looseStringTest(createLoosePattern(input), input)).toBeTruthy();
     expect(looseStringTest(createLoosePattern(input, 3), input)).toBeTruthy();
     expect(looseStringTest(createLoosePattern(input, 10), input)).toBeTruthy();
+  });
+});
+
+// TODO: undecided
+describe.skip('TODOs', () => {
+  test('escapes EOLs in inner quotes', () => {
+    const input = `{
+"value": "ab
+",
+"type": "string"
+  }`;
+    expect(createLoosePattern(input, 15)).toEqual('{ "value": "ab\\n" ...');
   });
 });
