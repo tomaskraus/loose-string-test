@@ -314,21 +314,21 @@ describe('parsePattern', () => {
     });
 });
 // -------------------------------------------------
-describe('createLoosePattern', () => {
+describe('createPattern', () => {
     test('creates an empty pattern from an empty string', () => {
-        expect((0, index_1.createLoosePattern)('')).toEqual('');
+        expect((0, index_1.createPattern)('')).toEqual('');
     });
     test('creates the same pattern as the simple short string with no EOLs', () => {
-        expect((0, index_1.createLoosePattern)('ab c')).toEqual('ab c');
+        expect((0, index_1.createPattern)('ab c')).toEqual('ab c');
     });
     test('replaces EOLs in the input with a space', () => {
-        expect((0, index_1.createLoosePattern)('ab\nc\n d ')).toEqual('ab c  d ');
+        expect((0, index_1.createPattern)('ab\nc\n d ')).toEqual('ab c  d ');
     });
     test('replaces EOLs in the input with a space (2)', () => {
         const input = `[1, 2, 3
 4, 5, 6
     ]`;
-        expect((0, index_1.createLoosePattern)(input, 5)).toEqual('[1, 2 ...');
+        expect((0, index_1.createPattern)(input, 5)).toEqual('[1, 2 ...');
     });
 });
 test('replaces EOLs in the input with a space (3)', () => {
@@ -336,36 +336,50 @@ test('replaces EOLs in the input with a space (3)', () => {
 "name": "Donald the Duck",
 "occupation": "pond manager"
   }`;
-    expect((0, index_1.createLoosePattern)(input, 19)).toEqual('{ "name": "Donald t ...');
+    expect((0, index_1.createPattern)(input, 19)).toEqual('{ "name": "Donald t ...');
 });
-describe('createLoosePattern (maxPatternBodyLength provided)', () => {
+describe('createPattern (maxPatternBodyLength provided)', () => {
     test('creates an empty start pattern if maxPatternBodyLength == 0', () => {
-        expect((0, index_1.createLoosePattern)('abc', 0)).toEqual(' ...');
+        expect((0, index_1.createPattern)('abc', 0)).toEqual(' ...');
     });
     test('creates a start pattern from a simple short string with no EOLs', () => {
-        expect((0, index_1.createLoosePattern)('abcd', 3)).toEqual('abc ...');
+        expect((0, index_1.createPattern)('abcd', 3)).toEqual('abc ...');
     });
 });
-describe('createLoosePattern: rules', () => {
+describe('createPattern exact pattern', () => {
+    test('creates an exact pattern if string starts with a space', () => {
+        expect((0, index_1.createPattern)(' abc')).toEqual('" abc"');
+    });
+    test('creates an exact start pattern if a long string starts with a space', () => {
+        expect((0, index_1.createPattern)(' abcefg', 3)).toEqual('" ab" ...');
+    });
+    test('creates an exact pattern if a short string ends with a space', () => {
+        expect((0, index_1.createPattern)('abc ')).toEqual('"abc "');
+    });
+    test('creates a loose start pattern if a long string ends (and not starts) with a space', () => {
+        expect((0, index_1.createPattern)('abcefg ', 3)).toEqual('abc ...');
+    });
+});
+describe('createPattern: rules', () => {
     test('creates a pattern that can loosely match the input string', () => {
         let input = '';
-        expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input), input)).toBeTruthy();
+        expect((0, index_1.looseStringTest)((0, index_1.createPattern)(input), input)).toBeTruthy();
         input = 'abc';
-        expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input), input)).toBeTruthy();
+        expect((0, index_1.looseStringTest)((0, index_1.createPattern)(input), input)).toBeTruthy();
         input = ' abc';
-        expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input), input)).toBeTruthy();
+        expect((0, index_1.looseStringTest)((0, index_1.createPattern)(input), input)).toBeTruthy();
         input = ' abc ';
-        expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input), input)).toBeTruthy();
+        expect((0, index_1.looseStringTest)((0, index_1.createPattern)(input), input)).toBeTruthy();
         input = 'abc def';
-        expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input), input)).toBeTruthy();
-        expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input, 0), input)).toBeTruthy();
-        expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input, 2), input)).toBeTruthy();
+        expect((0, index_1.looseStringTest)((0, index_1.createPattern)(input), input)).toBeTruthy();
+        expect((0, index_1.looseStringTest)((0, index_1.createPattern)(input, 0), input)).toBeTruthy();
+        expect((0, index_1.looseStringTest)((0, index_1.createPattern)(input, 2), input)).toBeTruthy();
         input = `[1, 2, 3
       4, 5, 6
           ]`;
-        expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input), input)).toBeTruthy();
-        expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input, 3), input)).toBeTruthy();
-        expect((0, index_1.looseStringTest)((0, index_1.createLoosePattern)(input, 10), input)).toBeTruthy();
+        expect((0, index_1.looseStringTest)((0, index_1.createPattern)(input), input)).toBeTruthy();
+        expect((0, index_1.looseStringTest)((0, index_1.createPattern)(input, 3), input)).toBeTruthy();
+        expect((0, index_1.looseStringTest)((0, index_1.createPattern)(input, 10), input)).toBeTruthy();
     });
 });
 // TODO: undecided
@@ -376,7 +390,7 @@ describe.skip('TODOs', () => {
 ",
 "type": "string"
   }`;
-        expect((0, index_1.createLoosePattern)(input, 15)).toEqual('{ "value": "ab\\n" ...');
+        expect((0, index_1.createPattern)(input, 15)).toEqual('{ "value": "ab\\n" ...');
     });
 });
 //# sourceMappingURL=index.test.js.map

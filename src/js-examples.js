@@ -1,7 +1,7 @@
 const {
   looseStringTest,
   parsePattern,
-  createLoosePattern,
+  createPattern,
   REST_MARK,
   DEFAULT_MAX_PATTERN_BODY_LENGTH,
 } = require('../build/src/index');
@@ -54,9 +54,20 @@ console.log(parsePattern('["a", "b c", "d" ...'));
 
 {
   const input = `[1, 2, 3,
-4, 5, 6]`;
-  console.log(createLoosePattern(input)); //=> '[1, 2, 3, 4, 5, 6]'
-  console.log(createLoosePattern(input, 5)); //=> '[1, 2 ...'
+    4, 5, 6]`;
+  createPattern(input); //=> '[1, 2, 3, 4, 5, 6]'
+
+  // we can limit the length of a pattern body
+  createPattern(input, 5); //=> '[1, 2 ...'
+
+  //return exact whole pattern if a short input string begins with a space
+  createPattern(' Hello World!'); //=> '" Hello World!"'
+
+  //return exact whole pattern if a short input string ends with a space
+  createPattern('Hello World! '); //=> '"Hello World! "'
+
+  //return exact start-pattern if a long input string begins with a space
+  createPattern(' Hello World!', 2); //=> '" He" ...'
 }
 
 {
@@ -65,4 +76,9 @@ b`;
   console.log(looseStringTest(input, input));
   console.log(looseStringTest(`"${input}"`, input));
   console.log(looseStringTest('"a\nb"', input));
+}
+
+{
+  const input = ' Hello World!';
+  console.log(createPattern(input)); //=> '" Hello World!"'
 }

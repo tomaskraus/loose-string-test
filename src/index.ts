@@ -81,27 +81,40 @@ export const parsePattern = (patternStr: string) => {
 };
 
 /**
- * creates a loose pattern from an input string
+ * creates a pattern from an input string
  * @param str input string
  * @param maxPatternBodyLength a threshold for a start-pattern creation. Limits the pattern body length. Dofaults to DEFAULT_MAX_PATTERN_BODY_LENGTH
- * @returns loose patern that can match the input string
+ * @returns pattern that can match the input string. If the input begins with a space, creates an exact pattern.  If the input string is short (<=maxPatternBodyLength) and ends with a space, creates an exact pattern.
  *
  * @example
  *
  * const input = `[1, 2, 3
  * 4, 5, 6]`;
- * createLoosePattern(input, 5) //=> '[1, 2 ...'
+ * createPattern(input, 5) //=> '[1, 2 ...'
+ *
+ * const input = ` Hello World!`;
+ * createPattern(input) //=> '" Hello World!"'
  *
  */
-export const createLoosePattern = (
+export const createPattern = (
   str: string,
   maxPatternBodyLength = DEFAULT_MAX_PATTERN_BODY_LENGTH
 ) => {
-  const s = str.replace(/\n/g, ' ');
+  let s = str.replace(/\n/g, ' ');
+  let considerForExact = s === str && s.length > 0;
+  let isLong = false;
   if (s.length > maxPatternBodyLength) {
-    return s.substring(0, maxPatternBodyLength) + ' ' + REST_MARK;
+    s = s.substring(0, maxPatternBodyLength);
+    isLong = true;
   }
-  return s;
+  if (considerForExact) {
+    considerForExact = (!isLong && s.slice(-1) === ' ') || s[0] === ' ';
+  }
+  if (considerForExact) {
+    s = `"${s}"`;
+  }
+
+  return isLong ? s + ' ' + REST_MARK : s;
 };
 
 export default looseStringTest;

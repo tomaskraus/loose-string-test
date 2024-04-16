@@ -213,15 +213,24 @@ parsePattern('["a", "b c", "d" ...');
 // }
 ```
 
-## createLoosePattern Function
+## createPattern Function
 
-Creates a loose pattern from an input string that matches that input string:
+Creates a pattern from an input string that matches that input string:
 
 ```js
 const input = `[1, 2, 3,
-4, 5, 6]`;
-createLoosePattern(input); //=> '[1, 2, 3, 4, 5, 6]'
+    4, 5, 6]`;
+createPattern(input); //=> '[1, 2, 3, 4, 5, 6]'
 
 // we can limit the length of a pattern body
-createLoosePattern(input, 5); //=> '[1, 2 ...'
+createPattern(input, 5); //=> '[1, 2 ...'
+
+//return exact whole pattern if a short input string begins with a space
+createPattern(' Hello World!'); //=> '" Hello World!"'
+
+//return exact whole pattern if a short input string ends with a space
+createPattern('Hello World! '); //=> '"Hello World! "'
+
+//return exact start-pattern if a long input string begins with a space
+createPattern(' Hello World!', 2); //=> '" He" ...'
 ```
