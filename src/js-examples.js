@@ -58,3 +58,11 @@ console.log(parsePattern('["a", "b c", "d" ...'));
   console.log(createLoosePattern(input)); //=> '[1, 2, 3, 4, 5, 6]'
   console.log(createLoosePattern(input, 5)); //=> '[1, 2 ...'
 }
+
+{
+  const input = `a
+b`;
+  console.log(looseStringTest(input, input));
+  console.log(looseStringTest(`"${input}"`, input));
+  console.log(looseStringTest('"a\nb"', input));
+}
