@@ -85,8 +85,13 @@ const {looseStringTest} = require('loose-string-test');
 
 ## On Patterns
 
-Patterns are strings, with special meaning to a `loose-string-test` library.  
-Patterns can be _exact_ or _loose_, _whole_ or _partial_.
+Patterns are strings, with special meaning to a `loose-string-test` library. The purpose of _pattern_ is to be matched against an _input_ string.
+Patterns can be _exact_ or _loose_, _whole_ or _start_.
+
+1. _exact_ pattern matches the exact the same input
+2. _loose_ pattern matches the input, even if there are some whitespace difference
+3. _whole_ pattern matches the input as a whole
+4. _start_ pattern matches only the beginning of the input
 
 ### Exact whole pattern
 
@@ -111,9 +116,9 @@ exactWholePatternBody === 'search text ';
 // ... i.e. false, because of trailing space at the end of the input string ('search text ')
 ```
 
-### Exact Partial Pattern
+### Exact Start Pattern
 
-By adding three dots (...) after the quoted part of the pattern string, we'll make that pattern an _exact partial pattern_:
+By adding three dots (...) after the quoted part of the pattern string, we'll make that pattern an _exact start pattern_:
 
 ```js
 // looseStringTest(pattern: string, input: string)
@@ -121,16 +126,16 @@ looseStringTest('"abc" ...', 'abcd'); //=> true
 looseStringTest('"abc" ...', 'ab'); //=> false
 ```
 
-With the _exact partial pattern_ argument, the `looseStringTest` functions just perform the _startsWith_ method:
+With the _exact start pattern_ argument, the `looseStringTest` functions just perform the _startsWith_ method:
 
 ```js
-const exactPartialPattern = '"search text" ...';
-const exactPartialPatternBody = 'search text';
+const exactStartPattern = '"search text" ...';
+const exactStartPatternBody = 'search text';
 
 // following function call:
-looseStringTest(exactPartialPattern, 'search text ');
+looseStringTest(exactStartPattern, 'search text ');
 // ... gives the same result as the expression:
-'search text '.startsWith(exactPartialPatternBody);
+'search text '.startsWith(exactStartPatternBody);
 // ... i.e. true
 ```
 
@@ -163,29 +168,29 @@ The only important whitespaces are ones inside quote pairs in the loose pattern:
 looseStringTest(' [ "a", " b " ] ', '["a"," b "]'); // true
 ```
 
-### Loose Partial Pattern
+### Loose Start Pattern
 
-Every loose pattern that ends with three dots (...) is considered to be a _loose partial pattern_:
+Every loose pattern that ends with three dots (...) is considered to be a _loose Start pattern_:
 
 ```js
-const loosePartialPattern = 'abc ...';
+const looseStartPattern = 'abc ...';
 ```
 
 It strips all the unimportant space and EOL characters from both the _pattern_ and _input_ before comparing them:
 
 ```js
-const loosePartialPattern = ' sea ...';
+const looseStartPattern = ' sea ...';
 
 // following function call:
-looseStringTest(loosePartialPattern, 'search text ');
+looseStringTest(looseStartPattern, 'search text ');
 // ... gives the same result as the expression:
 stripUnimportantWhitechars('search text ').startsWith(
-  stripUnimportantWhitechars(loosePartialPattern)
+  stripUnimportantWhitechars(looseStartPattern)
 );
 // ... true
 ```
 
-The only important whitespaces are ones inside quote pairs in the loose partial pattern:
+The only important whitespaces are ones inside quote pairs in the loose start pattern:
 
 ```js
 looseStringTest(' [ "a", " b ", .... ', '["a"," b ","c "]'); // true
